@@ -4,6 +4,7 @@ const express     = require('express');
 const bodyParser  = require('body-parser');
 const cors        = require('cors');
 require('dotenv').config();
+const mongoose = require('mongoose');
 
 const apiRoutes         = require('./routes/api.js');
 const fccTestingRoutes  = require('./routes/fcctesting.js');
@@ -38,6 +39,9 @@ app.use(function(req, res, next) {
 });
 
 //Start our server and tests!
+mongoose.connect(process.env.DB)
+.then(() => {
+  console.log("Database Connected!");
 const listener = app.listen(process.env.PORT || 3000, function () {
   console.log('Your app is listening on port ' + listener.address().port);
   if(process.env.NODE_ENV==='test') {
@@ -51,6 +55,10 @@ const listener = app.listen(process.env.PORT || 3000, function () {
       }
     }, 1500);
   }
+});
+})
+.catch ((error) => {
+  console.log({error: error.message})
 });
 
 module.exports = app; //for unit/functional testing
