@@ -67,7 +67,7 @@ module.exports = function (app) {
         const book = await Book.findById(bookid);
         if (!book) {
           res.send("no book exists")
-        }else {
+        } else {
           res.send({
             title: book.title,
             _id: book._id,
@@ -75,22 +75,54 @@ module.exports = function (app) {
           })
         }
       }
-      
-     //json res format: {"_id": bookid, "title": book_title, "comments": [comment,comment,...]}
-     catch (error) {
-    console.log({ error: error.message })
-  }
-})
-    
-    .post(function (req, res) {
-  let bookid = req.params.id;
-  let comment = req.body.comment;
-  //json res format same as .get
-})
 
-  .delete(function (req, res) {
-    let bookid = req.params.id;
-    //if successful response will be 'delete successful'
-  });
-  
+      //json res format: {"_id": bookid, "title": book_title, "comments": [comment,comment,...]}
+      catch (error) {
+        console.log({ error: error.message })
+      }
+    })
+
+    .post(async function (req, res) {
+      let bookid = req.params.id;
+      let comment = req.body.comment;
+      if (!comment || comment === " ") {
+        res.send("missing required field comment")
+      }
+      //json res format same as .get
+
+      try {
+        const book = await Book.findById(bookid);
+        if (!book) {
+          res.send("no book exists")
+        } else {
+          book.comments.push(comment);
+          await book.save();
+          res.send({
+            title: book.title,
+            _id: book._id,
+            comments: book.comments
+          })
+        }
+      }
+      catch (error) {
+        console.log({ error: error.message })
+      }
+    })
+    .delete(async function (req, res) {
+      let bookid = req.params.id;
+      //if successful response will be 'delete successful'
+      try {
+        const result = await Book.findByIdAndDelete(bookid);
+        if (!result) {
+          res.send("no book exists");
+        }else {
+          res.send("delete successful")
+        }
+
+      }
+      catch (error) {
+        console.log({ error: error.message })
+      }
+    });
+
 };
