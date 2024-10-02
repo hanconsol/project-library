@@ -9,16 +9,34 @@
 'use strict';
 
 module.exports = function (app) {
-
+const Book = require('../models/library.js');
   app.route('/api/books')
     .get(function (req, res){
       //response will be array of book objects
       //json res format: [{"_id": bookid, "title": book_title, "commentcount": num_of_comments },...]
     })
     
-    .post(function (req, res){
+    .post( async function (req, res){
       let title = req.body.title;
       //response will contain new book object including atleast _id and title
+      if (!title || title === " ") {
+        res.send('missing required field title')
+      }
+      try{
+         const book =  new Book({ 
+          title: title
+       });
+       const result = await book.save();
+       console.log(result);
+       res.send({
+        title: result.title,
+        _id: result._id
+       });
+
+      }
+      catch(error) {
+        console.log({error: error.message})
+      }
     })
     
     .delete(function(req, res){

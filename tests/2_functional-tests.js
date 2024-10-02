@@ -41,7 +41,16 @@ suite('Functional Tests', function() {
     suite('POST /api/books with title => create book object/expect book object', function() {
       
       test('Test POST /api/books with title', function(done) {
-        //done();
+        chai
+          .request(server)
+          .keepOpen()
+          .post('/api/books')
+          .send({title: "Greatest Book Ever"})
+          .end((req, res) => {
+            assert.equal(res.status, 200);
+            assert.equal(res.body.title, "Greatest Book Ever")
+          });
+        done();
       });
       
       test('Test POST /api/books with no title given', function(done) {
