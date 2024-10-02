@@ -81,6 +81,7 @@ suite('Functional Tests', function () {
           .get('/api/books')
           .end((req, res) => {
             assert.equal(res.status, 200);
+            assert.isArray(res.body, 'response should be an array');
           });
         done();
       });
@@ -183,9 +184,9 @@ suite('Functional Tests', function () {
           });
         done();
       });
-   
-    test('Test DELETE /api/books/[id] with  id not in db', function (done) {
-  chai
+
+      test('Test DELETE /api/books/[id] with  id not in db', function (done) {
+        chai
           .request(server)
           .keepOpen()
           .delete('/api/books/404cba71b4bc82800d345404')
@@ -194,10 +195,10 @@ suite('Functional Tests', function () {
             assert.equal(res.text, "no book exists");
           });
         done();
-          });
+      });
+
+    });
 
   });
-
-});
 
 });

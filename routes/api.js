@@ -25,7 +25,9 @@ module.exports = function (app) {
         res.send(countComments);
       }
       catch (error) {
-        console.log({ error: error.message })
+        console.log({ error: error.message,
+          location: "1st get with commentcount"
+         })
       }
       //json res format: [{"_id": bookid, "title": book_title, "commentcount": num_of_comments },...]
     })
@@ -34,7 +36,8 @@ module.exports = function (app) {
       let title = req.body.title;
       //response will contain new book object including atleast _id and title
       if (!title || title === " ") {
-        res.send('missing required field title')
+        res.send('missing required field title');
+        return;
       }
       try {
         const book = new Book({
@@ -49,7 +52,7 @@ module.exports = function (app) {
 
       }
       catch (error) {
-        console.log({ error: error.message })
+        console.log({ error: error.message, location: "post title" })
       }
     })
 
@@ -64,7 +67,7 @@ module.exports = function (app) {
 
       }
       catch (error) {
-        console. log({error: error.message})
+        console. log({error: error.message, location: "delete all"})
       }
     });
 
@@ -89,7 +92,7 @@ module.exports = function (app) {
 
       //json res format: {"_id": bookid, "title": book_title, "comments": [comment,comment,...]}
       catch (error) {
-        console.log({ error: error.message })
+        console.log({ error: error.message, location: "get bookid" })
       }
     })
 
@@ -97,14 +100,16 @@ module.exports = function (app) {
       let bookid = req.params.id;
       let comment = req.body.comment;
       if (!comment || comment === " ") {
-        res.send("missing required field comment")
+        res.send("missing required field comment");
+        return;
       }
       //json res format same as .get
 
       try {
         const book = await Book.findById(bookid);
         if (!book) {
-          res.send("no book exists")
+          res.send("no book exists");
+          return;
         } else {
           book.comments.push(comment);
           await book.save();
@@ -116,7 +121,7 @@ module.exports = function (app) {
         }
       }
       catch (error) {
-        console.log({ error: error.message })
+        console.log({ error: error.message, location: "post comment" })
       }
     })
     .delete(async function (req, res) {
@@ -132,7 +137,7 @@ module.exports = function (app) {
 
       }
       catch (error) {
-        console.log({ error: error.message })
+        console.log({ error: error.message, location: "delete bookid" })
       }
     });
 
