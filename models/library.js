@@ -5,7 +5,7 @@ const BookSchema = mongoose.Schema({
         type: String,
         required: false
     },
-    comment: []
+    comments: []
 });
 const Book = mongoose.model('Book', BookSchema);
 

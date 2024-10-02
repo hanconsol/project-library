@@ -11,8 +11,22 @@
 module.exports = function (app) {
 const Book = require('../models/library.js');
   app.route('/api/books')
-    .get(function (req, res){
+    .get(async function (req, res){
       //response will be array of book objects
+      try{
+        const library = await Book.find({
+          title: {$gt: ""}
+        });
+        const countComments = library.map(({title, _id, comments}) => ({
+          title: title, 
+          _id: _id,
+          commentcount: comments.length
+        }))
+        res.send(countComments);
+      }
+      catch(error) {
+        console.log({error: error.message})
+      }
       //json res format: [{"_id": bookid, "title": book_title, "commentcount": num_of_comments },...]
     })
     
