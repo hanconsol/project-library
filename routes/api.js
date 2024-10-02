@@ -53,8 +53,19 @@ module.exports = function (app) {
       }
     })
 
-    .delete(function (req, res) {
+    .delete(async function (req, res) {
       //if successful response will be 'complete delete successful'
+      try {
+        const result = await Book.deleteMany({title: {$gte: ""}});
+        console. log(result);
+        if (result) {
+          res.send("complete delete successful")
+        }
+
+      }
+      catch (error) {
+        console. log({error: error.message})
+      }
     });
 
 
