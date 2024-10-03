@@ -14,9 +14,7 @@ module.exports = function (app) {
     .get(async function (req, res) {
       //response will be array of book objects
       try {
-        const library = await Book.find({
-          title: { $gt: "" }
-        });
+        const library = await Book.find({});
         const books = library.map(({ title, _id, comments }) =>  (
           {
           commentcount: comments.length,
@@ -61,8 +59,8 @@ module.exports = function (app) {
     .delete(async function (req, res) {
       //if successful response will be 'complete delete successful'
       try {
-        const result = await Book.deleteMany({ title: { $gte: "" } });
-        console.log(result);
+        const result = await Book.deleteMany({});
+        console.log("deleted many", result);
         if (result) {
           res.send("complete delete successful")
         }
@@ -82,7 +80,8 @@ module.exports = function (app) {
       try {
         const book = await Book.findById(bookid);
         if (!book) {
-          res.send("no book exists")
+          res.send("no book exists");
+          return;
         } else {
           res.send({
             title: book.title,
@@ -133,6 +132,7 @@ module.exports = function (app) {
         const result = await Book.findByIdAndDelete(bookid);
         if (!result) {
           res.send("no book exists");
+          return;
         } else {
           res.send("delete successful")
         }
