@@ -17,17 +17,19 @@ module.exports = function (app) {
         const library = await Book.find({
           title: { $gt: "" }
         });
-        const countComments = library.map(({ title, _id, comments }) => ({
+        const books = library.map(({ title, _id, comments }) =>  (
+          {
+          commentcount: comments.length,
           title: title,
           _id: _id,
-          commentcount: comments.length
-        }))
-        res.send(countComments);
+        }));
+        res.send(books);
       }
       catch (error) {
-        console.log({ error: error.message,
+        console.log({
+          error: error.message,
           location: "1st get with commentcount"
-         })
+        })
       }
       //json res format: [{"_id": bookid, "title": book_title, "commentcount": num_of_comments },...]
     })
@@ -59,15 +61,15 @@ module.exports = function (app) {
     .delete(async function (req, res) {
       //if successful response will be 'complete delete successful'
       try {
-        const result = await Book.deleteMany({title: {$gte: ""}});
-        console. log(result);
+        const result = await Book.deleteMany({ title: { $gte: "" } });
+        console.log(result);
         if (result) {
           res.send("complete delete successful")
         }
 
       }
       catch (error) {
-        console. log({error: error.message, location: "delete all"})
+        console.log({ error: error.message, location: "delete all" })
       }
     });
 
@@ -131,7 +133,7 @@ module.exports = function (app) {
         const result = await Book.findByIdAndDelete(bookid);
         if (!result) {
           res.send("no book exists");
-        }else {
+        } else {
           res.send("delete successful")
         }
 
